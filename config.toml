@@ -1,4 +1,4 @@
-baseURL = "http://msAlcantara.github.io"
+baseURL = "https://msalcantara.github.io/"
 languageCode = "en-us"
 title = "Matheus Alcantara"
 theme="hermit"
