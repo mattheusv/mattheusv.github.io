@@ -2,6 +2,7 @@ baseURL = "http://msAlcantara.github.io"
 languageCode = "en-us"
 title = "Matheus Alcantara"
 theme="hermit"
+publishDir="docs"
 
 
 [author]
