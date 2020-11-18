@@ -1,6 +1,6 @@
 ## Experiência profissinal
 
-- Jul 2020/Presente - **Jr Software Enginner**, [Konker](http://www.konkerlabs.com/)
+- Jul 2020/Presente - **Software Enginner**, [Konker](http://www.konkerlabs.com/)
   - Desenvolvimento backend na plataforma [Insider](https://insidersec.io/) utilizando Go
 
 - Marc 2019/Jul 2020 - **Jr Software Enginner**, [Inmetrics](https://inmetrics.com.br/)
