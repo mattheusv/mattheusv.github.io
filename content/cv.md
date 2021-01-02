@@ -17,6 +17,7 @@
   - Graduação Análise e Desenvolvimento de Sistemas
 
 ## Contribuições Open Source
+- [gopls](https://github.com/golang/tools/commits?author=msAlcantara) [Language server](https://langserver.org/) da linguagem Go
 - [yay](https://github.com/Jguer/yay/commits?author=msAlcantara) Gerenciador de pacotes para distribuição Arch Linux
 - [Grafana](https://github.com/grafana/grafana/commits?author=msAlcantara) Monitoramento e análise de métricas e painéis para Graphite, InfluxDB e Prometheus.
 
