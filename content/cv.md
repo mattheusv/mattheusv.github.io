@@ -1,16 +1,17 @@
 ## Experiência profissinal
 
 - Jul 2020/Presente - **Software Enginner**, [Konker](http://www.konkerlabs.com/)
-  - Desenvolvimento backend na plataforma [Insider](https://insidersec.io/) utilizando Go
+  - Desenvolvimento backend com foco em SAST (Static Application Security Testing) utilizando Go com banco de dados Postgres.
+  - Desenvolvimento de CLI (Command line interface) [Open Source](https://github.com/insidersec/insider) de SAST.
 
 - Marc 2019/Jul 2020 - **Jr Software Enginner**, [Inmetrics](https://inmetrics.com.br/)
-  - Desenvolvimento web utilizando Python com o framework Django, integrando com banco de dados Postgres e Elasticsearch.
+  - Desenvolvimento web utilizando Python com o framework Django, integrando com banco de dados Postgres e Elasticsearch com foco em criação de projeções e métricas de infraestrutura.
 
 - Out 2018/Mar 2019 - **Analista de Desenvolvimento e Automação de Sistemas Junior**, [Inmetrics](https://inmetrics.com.br/)
-  - Desenvolvimento de soluções para todos os testes automatizados e infraestrutura terem qualidade durante as execuções diárias.
+  - Desenvolvimento de soluções para testes automatizados e infraestrutura terem alta performance durante as execuções diárias.
 
 - Dez 2017/Out 2018 - **Assistente de automação**, [Inmetrics](https://inmetrics.com.br/)
-  - Desenvolvimento de testes automatizados utilizando Java com JUnit, Selenium Webdriver, Cucumber e integração continua com Jenkins.
+  - Desenvolvimento de testes automatizados utilizando Java com JUnit, Selenium Webdriver, Cucumber e integração contínua com Jenkins.
 
 ## Formação acadêmica
 - 2017 - 2019 **Faculdade Impacta Tecnologia**
@@ -26,13 +27,14 @@
 - Confortável
   - Go
   - Python
+  - Shell
 - Familiar
   - Rust
-  - JavaScript(Node.js)
+  - JavaScript
   - Java
 
 ## Ferramentas
- - Go: Confortável com testes, bechmarks e Goroutines
+ - Go: Confortável com testes, bechmarks, Goroutines e pprof
  - Python: Confortável com testes, criação de scripts e o framework Django
  - Git: Experiência com branches, rebasing, conflitos, etc
  - Linux: Utilizo e estudo sobre Linux a 3 anos
@@ -41,4 +43,4 @@
 ## Informações adicionais
 - Ministrei dois cursos sobre a utilização de Git na [Inmetrics](https://inmetrics.com.br/)
 - Palestras sobre Golang, Rust e Git mais avançado na [Inmetrics](https://inmetrics.com.br/)
-- Conhecimento intermediario de Ingles voltado mais para leitura e com limitações na conversação
+- Conhecimento intermediário de Ingles voltado mais para leitura e com limitações na conversação
