@@ -42,5 +42,5 @@
 
 ## Informações adicionais
 - Ministrei dois cursos sobre a utilização de Git na [Inmetrics](https://inmetrics.com.br/)
-- Palestras sobre Golang, Rust e Git mais avançado na [Inmetrics](https://inmetrics.com.br/)
+- Palestras sobre Golang, Rust, TDD e Git mais avançado na [Inmetrics](https://inmetrics.com.br/)
 - Conhecimento intermediário de Ingles voltado mais para leitura e com limitações na conversação
