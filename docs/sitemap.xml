@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
-  <url>
-    <loc>https://msalcantara.github.io/cv/</loc>
-    <priority>0</priority>
-  </url>
+  <sitemap>
+    <loc>https://msalcantara.github.io/en/sitemap.xml</loc>
+    
+  </sitemap>
   
-  <url>
-    <loc>https://msalcantara.github.io/categories/</loc>
-  </url>
+  <sitemap>
+    <loc>https://msalcantara.github.io/pt-br/sitemap.xml</loc>
+    
+  </sitemap>
   
-  <url>
-    <loc>https://msalcantara.github.io/</loc>
-  </url>
-  
-  <url>
-    <loc>https://msalcantara.github.io/tags/</loc>
-  </url>
-  
-</urlset>
+</sitemapindex>

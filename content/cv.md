@@ -1,30 +1,30 @@
-## Experiência profissinal
+## Experience
 
-- Jul 2020/Presente - **Software Enginner**, [Konker](http://www.konkerlabs.com/)
-  - Desenvolvimento backend com foco em SAST (Static Application Security Testing) utilizando Go com banco de dados Postgres.
-  - Desenvolvimento de CLI (Command line interface) [Open Source](https://github.com/insidersec/insider) de SAST.
+- Jul 2020/Present - **Software Enginner**, [Konker](http://www.konkerlabs.com/)
+  - Backend development focusing on SAST (Static Application Security Testing) using Go with Postgres database.
+  - Development of CLI (Command line interface) [Open Source](https://github.com/insidersec/insider) of SAST.
 
 - Marc 2019/Jul 2020 - **Jr Software Enginner**, [Inmetrics](https://inmetrics.com.br/)
-  - Desenvolvimento web utilizando Python com o framework Django, integrando com banco de dados Postgres e Elasticsearch com foco em criação de projeções e métricas de infraestrutura.
+  - Web development using Python with Django framework, integrating with Postgres and Elasticsearch databases with a focus on creating infrastructure and metrics projections.
 
 - Out 2018/Mar 2019 - **Analista de Desenvolvimento e Automação de Sistemas Junior**, [Inmetrics](https://inmetrics.com.br/)
-  - Desenvolvimento de soluções para testes automatizados e infraestrutura terem alta performance durante as execuções diárias.
+  - Development of solutions for automated tests and infrastructure to have high performance during daily executions.
 
 - Dez 2017/Out 2018 - **Assistente de automação**, [Inmetrics](https://inmetrics.com.br/)
-  - Desenvolvimento de testes automatizados utilizando Java com JUnit, Selenium Webdriver, Cucumber e integração contínua com Jenkins.
+  - Development of automated tests using Java with JUnit, Selenium Webdriver, Cucumber and continuous integration with Jenkins.
 
-## Formação acadêmica
+## Education
 - 2017 - 2019 **Faculdade Impacta Tecnologia**
-  - Graduação Análise e Desenvolvimento de Sistemas
+  - Graduation in Systems Analysis and Development
 
 ## Contribuições Open Source
-- [gopls](https://github.com/golang/tools/commits?author=msAlcantara) [Language server](https://langserver.org/) da linguagem Go
-- [yay](https://github.com/Jguer/yay/commits?author=msAlcantara) Gerenciador de pacotes para distribuição Arch Linux
-- [Grafana](https://github.com/grafana/grafana/commits?author=msAlcantara) Monitoramento e análise de métricas e painéis para Graphite, InfluxDB e Prometheus.
+- [gopls](https://github.com/golang/tools/commits?author=msAlcantara) [Language server](https://langserver.org/) of Go programming language
+- [yay](https://github.com/Jguer/yay/commits?author=msAlcantara) Package management of Arch Linux
+- [Grafana](https://github.com/grafana/grafana/commits?author=msAlcantara) Monitoring and analysis of metrics and panels for Graphite, InfluxDB, Prometheus and more.
 
 
-## Linguagens de programação
-- Confortável
+## Programming languages
+- Confortable
   - Go
   - Python
   - Shell
@@ -33,14 +33,14 @@
   - JavaScript
   - Java
 
-## Ferramentas
- - Go: Confortável com testes, bechmarks, Goroutines e pprof
- - Python: Confortável com testes, criação de scripts e o framework Django
- - Git: Experiência com branches, rebasing, conflitos, etc
- - Linux: Utilizo e estudo sobre Linux a 3 anos
- - Containers: Familiar com Docker e básico conhecimento em Kubernetes
+## Tools
+ - Go: Confortable with tests, bechmarks, Goroutines e pprof
+ - Python: Conforable with tests, development of scripts and Django framework 
+ - Git: Experience with branches, rebasing, conflicts, etc.
+ - Linux: I use and study Linux for 3 years
+ - Containers: Familiar with Docker and basic knowledge in Kubernetes
 
-## Informações adicionais
-- Ministrei dois cursos sobre a utilização de Git na [Inmetrics](https://inmetrics.com.br/)
-- Palestras sobre Golang, Rust, TDD e Git mais avançado na [Inmetrics](https://inmetrics.com.br/)
-- Conhecimento intermediário de Ingles voltado mais para leitura e com limitações na conversação
+## Additional Information
+- I taught two courses on using Git at [Inmetrics](https://inmetrics.com.br/)
+- Lectures on Golang, Rust, TDD and advanced Git at [Inmetrics](https://inmetrics.com.br/)
+- Intermediate knowledge of English with a focus on reading and limited conversation
