@@ -17,7 +17,7 @@
 - 2017 - 2019 **Faculdade Impacta Tecnologia**
   - Graduation in Systems Analysis and Development
 
-## Contribuições Open Source
+## Open Source contributions
 - [gopls](https://github.com/golang/tools/commits?author=msAlcantara) [Language server](https://langserver.org/) of Go programming language
 - [yay](https://github.com/Jguer/yay/commits?author=msAlcantara) Package management of Arch Linux
 - [Grafana](https://github.com/grafana/grafana/commits?author=msAlcantara) Monitoring and analysis of metrics and panels for Graphite, InfluxDB, Prometheus and more.
