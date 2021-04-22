@@ -13,8 +13,8 @@
       
       <guid>https://msalcantara.github.io/cv/</guid>
       <description>Experience   Jul 2020/Present - Software Enginner, Konker
- Backend development focusing on SAST (Static Application Security Testing) using Go with Postgres database. Development of CLI (Command line interface) Open Source of SAST.    Marc 2019/Jul 2020 - Jr Software Enginner, Inmetrics
- Web development using Python with Django framework, integrating with Postgres and Elasticsearch databases with a focus on creating infrastructure and metrics projections.    Out 2018/Mar 2019 - Analista de Desenvolvimento e Automação de Sistemas Junior, Inmetrics</description>
+ Backend development focusing on SAST (Static Application Security Testing) using Go, NodeJs, RabbitMQ and PostgreSQL. Development of CLI (Command line interface) Open Source of SAST.    Marc 2019/Jul 2020 - Jr Software Enginner, Inmetrics
+ Web development using Python with Django framework, integrating with PostgreSQL and Elasticsearch databases with a focus on creating infrastructure and metrics projections.    Out 2018/Mar 2019 - Junior Systems Development and Automation Analyst, Inmetrics</description>
     </item>
     
   </channel>

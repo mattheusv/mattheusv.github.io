@@ -1,16 +1,16 @@
 ## Experience
 
 - Jul 2020/Present - **Software Enginner**, [Konker](http://www.konkerlabs.com/)
-  - Backend development focusing on SAST (Static Application Security Testing) using Go with Postgres database.
+  - Backend development focusing on SAST (Static Application Security Testing) using Go, NodeJs, RabbitMQ and PostgreSQL.
   - Development of CLI (Command line interface) [Open Source](https://github.com/insidersec/insider) of SAST.
 
 - Marc 2019/Jul 2020 - **Jr Software Enginner**, [Inmetrics](https://inmetrics.com.br/)
-  - Web development using Python with Django framework, integrating with Postgres and Elasticsearch databases with a focus on creating infrastructure and metrics projections.
+  - Web development using Python with Django framework, integrating with PostgreSQL and Elasticsearch databases with a focus on creating infrastructure and metrics projections.
 
-- Out 2018/Mar 2019 - **Analista de Desenvolvimento e Automação de Sistemas Junior**, [Inmetrics](https://inmetrics.com.br/)
-  - Development of solutions for automated tests and infrastructure to have high performance during daily executions.
+- Out 2018/Mar 2019 - **Junior Systems Development and Automation Analyst**, [Inmetrics](https://inmetrics.com.br/)
+  - Development of REST APIs using Go and Java to manage data mocks and reports of automated tests. Most of development is using Oracle and MongoDB databases.
 
-- Dez 2017/Out 2018 - **Assistente de automação**, [Inmetrics](https://inmetrics.com.br/)
+- Dez 2017/Out 2018 - **Automation Assistant**, [Inmetrics](https://inmetrics.com.br/)
   - Development of automated tests using Java with JUnit, Selenium Webdriver, Cucumber and continuous integration with Jenkins.
 
 ## Education
