@@ -1,6 +1,10 @@
 ## Experiência profissinal
 
-- Jul 2020/Presente - **Software Enginner**, [Konker](http://www.konkerlabs.com/)
+- Maio 2021/Presente - **Backend Software Enginner**, [Zup Innovation](https://www.zup.com.br/)
+  - Desenvolvimento de engine semântica voltada para SAST (Static Application Security Testing) utilizando Go
+  - Desenvolvimento de CLI (Command line interface) [Open Source](https://github.com/zupIT/horusec) de SAST.
+
+- Jul 2020/Maio 2021 - **Software Enginner**, [Konker](http://www.konkerlabs.com/)
   - Desenvolvimento backend com foco em SAST (Static Application Security Testing) utilizando Go, NodeJs, RabbitMQ e PostgreSQL.
   - Desenvolvimento de CLI (Command line interface) [Open Source](https://github.com/insidersec/insider) de SAST.
 
