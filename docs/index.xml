@@ -12,9 +12,9 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://msalcantara.github.io/cv/</guid>
-      <description>Experience   Jul 2020/Present - Software Enginner, Konker
- Backend development focusing on SAST (Static Application Security Testing) using Go, NodeJs, RabbitMQ and PostgreSQL. Development of CLI (Command line interface) Open Source of SAST.    Marc 2019/Jul 2020 - Jr Software Enginner, Inmetrics
- Web development using Python with Django framework, integrating with PostgreSQL and Elasticsearch databases with a focus on creating infrastructure and metrics projections.    Out 2018/Mar 2019 - Junior Systems Development and Automation Analyst, Inmetrics</description>
+      <description>Experience   May 2021/Present - Backend Software Enginner, Zup Innovation
+ Maintainer of Horusec. An open source SAST (Static Application Security Testing) tool Open Source. Development of a semantic engine to improve the accuracy of SAST.    Jul 2020/May 2021 - Software Enginner, Konker
+ Backend development focusing on SAST (Static Application Security Testing) using Go, NodeJs, RabbitMQ and PostgreSQL. Development of CLI (Command line interface) Open Source of SAST.</description>
     </item>
     
   </channel>
