@@ -13,8 +13,8 @@
       
       <guid>https://msalcantara.github.io/cv/</guid>
       <description>Experience   May 2021/Present - Backend Software Enginner, Zup Innovation
- Maintainer of Horusec. An open source SAST (Static Application Security Testing) tool Open Source. Development of a semantic engine to improve the accuracy of SAST.    Jul 2020/May 2021 - Software Enginner, Konker
- Backend development focusing on SAST (Static Application Security Testing) using Go, NodeJs, RabbitMQ and PostgreSQL. Development of CLI (Command line interface) Open Source of SAST.</description>
+ Maintainer of Horusec; open source security command line tool. Development of a semantic analysis engine that uses compiler techniques such as SSA and Data Flow Analysis to improve the accuracy of static code analysis.    Jul 2020/May 2021 - Software Enginner, Konker
+ Backend development of a SAST (Static Application Security Testing) tool using Go, PostgreSQL and RabbitMQ.</description>
     </item>
     
   </channel>
