@@ -1,33 +1,52 @@
 languageCode = "en-us"
 baseURL = "https://msalcantara.github.io/"
 title = "Matheus Alcantara"
-theme="hermit"
+theme="PaperMod"
 publishDir="docs"
 DefaultContentLanguage = "en"
-
 
 [author]
   name = "matheusssilv97@gmail.com"
 
+[params]
+    defaultTheme = "auto"
+
+    [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/msAlcantara"
+
+    [[params.socialIcons]]
+    name = "email"
+    url = "mailto:matheusssilv97@gmail.com"
+
+    [[params.socialIcons]]
+    name = "twitter"
+    url = "https://twitter.com/matheussilv__"
+
+    [[params.socialIcons]]
+    name = "linkedin"
+    url = "https://www.linkedin.com/in/matheus-alcantara/?locale=en_US"
 
 [languages]
     [languages.en]
-        [languages.en.params]
-        themeColor = "#494f5c"
+        [languages.en.params.profileMode]
+            enabled = true
+            title = "Hi, I'm Matheus"
+            subtitle = "I write software and other stufs"
 
-        [[languages.en.params.social]]
-        name = "github"
-        url = "https://github.com/msAlcantara"
-
-        [[languages.en.params.social]]
-        name = "email"
-        url = "mailto:matheusssilv97@gmail.com"
-
-        [[languages.en.params.social]]
-        name = "linkedin"
-        url = "https://www.linkedin.com/in/matheus-alcantara/?locale=en_US"
+            [[languages.en.params.profileMode.buttons]]
+            name = "Posts"
+            url = "/posts"
+            [[languages.en.params.profileMode.buttons]]
+            name = "About"
+            url = "/about"
 
         [[languages.en.menu.main]]
-        name = "cv"
-        url = "cv/"
-        weight = 10
+        identifier = "posts"
+        name       = "Posts"
+        url        = "/posts"
+
+        [[languages.en.menu.main]]
+        identifier = "about"
+        name = "About"
+        url = "/about"
