@@ -12,9 +12,9 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://msalcantara.github.io/pt-br/cv/</guid>
-      <description>Experiência   Maio 2021/Presente - Backend Software Enginner, Zup Innovation
- Mantenedor do Horusec; ferramenta de linha de comando open source de segurança. Desenvolvimento de um motor de analise semântica que utiliza técnicas de compiladores como SSA e Data Flow Analysis para melhorar acurácia de análise estática de código.    Jul 2020/Maio 2021 - Software Enginner, Konker
- Desenvolvimento backend de uma ferramenta SAST (Static Application Security Testing) utilizando Go, PostgreSQL e RabbitMQ.</description>
+      <description>Experiência Maio 2021/Presente - Backend Software Enginner, Zup Innovation
+Mantenedor do Horusec; ferramenta de linha de comando open source de segurança. Desenvolvimento de um motor de analise semântica que utiliza técnicas de compiladores como SSA e Data Flow Analysis para melhorar acurácia de análise estática de código. Jul 2020/Maio 2021 - Software Enginner, Konker
+Desenvolvimento backend de uma ferramenta SAST (Static Application Security Testing) utilizando Go, PostgreSQL e RabbitMQ. Mantenedor do Insider; ferramenta de linha de comando open source de SAST.</description>
     </item>
     
   </channel>
