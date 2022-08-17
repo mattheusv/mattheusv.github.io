@@ -31,23 +31,3 @@ DefaultContentLanguage = "en"
         name = "cv"
         url = "cv/"
         weight = 10
-
-    [languges.pt-br]
-        themeColor = "#494f5c"
-
-        [[languages.pt-br.params.social]]
-        name = "github"
-        url = "https://github.com/msAlcantara"
-
-        [[languages.pt-br.params.social]]
-        name = "email"
-        url = "mailto:matheusssilv97@gmail.com"
-
-        [[languages.pt-br.params.social]]
-        name = "linkedin"
-        url = "https://www.linkedin.com/in/matheus-alcantara/"
-
-        [[languages.pt-br.menu.main]]
-        name = "cv"
-        url = "cv/"
-        weight = 10
