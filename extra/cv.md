@@ -8,7 +8,10 @@
 
 ## Experience
 
-- May 2021/Present - **Backend Software Enginner**, [Zup Innovation](https://www.zup.com.br/)
+- Jun 2022/Present - **Software Enginner**, [Gympass](https://site.gympass.com)
+  - Backend development using Go in a distributed system architecture.
+
+- May 2021/Jun 2022 - **Backend Software Enginner**, [Zup Innovation](https://www.zup.com.br/)
   - [Maintainer](https://github.com/ZupIT/horusec/commits?author=matheusalcantarazup) of 
   [Horusec](https://github.com/ZupIT/horusec); open source security command line tool.
   - Development of a semantic analysis engine that uses compiler techniques such as SSA and Data Flow Analysis to 
@@ -36,6 +39,7 @@
 - [yay](https://github.com/Jguer/yay/commits?author=msAlcantara) Package management of Arch Linux
 - [Grafana](https://github.com/grafana/grafana/commits?author=msAlcantara) Monitoring and analysis of metrics and panels for Graphite, InfluxDB, Prometheus and more.
 - [Prometheus](https://github.com/prometheus/prometheus/commits?author=msAlcantara) Monitoring system and time series database. 
+- [PostgreSQL](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=6a1f082abac9da756d473e16238a906ca5a592dc) The World's Most Advanced Open Source Relational Database.
 
 
 ## Education
@@ -62,9 +66,9 @@
 
 
 ## Additional Information
-- Proficient in English, currently at Horusec all public communication is carried out in English.
+- Proficient in English, currently at Gympass all communication is carried out in English.
 - I taught two courses on using Git at [Inmetrics](https://inmetrics.com.br/)
-- Lectures on Golang, Rust, TDD and advanced Git at [Inmetrics](https://inmetrics.com.br/)
+- Lectures on Go, Rust, TDD and advanced Git at [Inmetrics](https://inmetrics.com.br/)
 
 ---
 I like to understand problems in depth and creating scalable, secure, well-documented software. I'm always interested in 
