@@ -69,6 +69,7 @@
 - Proficient in English, currently at Gympass all communication is carried out in English.
 - I taught two courses on using Git at [Inmetrics](https://inmetrics.com.br/)
 - Lectures on Go, Rust, TDD and advanced Git at [Inmetrics](https://inmetrics.com.br/)
+- Lectures given an overview of how a compiler works in [Zup](https://www.zup.com.br/)
 
 ---
 I like to understand problems in depth and creating scalable, secure, well-documented software. I'm always interested in 
