@@ -32,7 +32,7 @@ DefaultContentLanguage = "en"
         [languages.en.params.profileMode]
             enabled = true
             title = "Hi, I'm Matheus"
-            subtitle = "I write software and other stufs"
+            subtitle = ""
 
             [[languages.en.params.profileMode.buttons]]
             name = "Posts"
