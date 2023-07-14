@@ -1,7 +1,7 @@
 ## Experience
 
 - Jun 2022/Present - **Software Enginner**, [Gympass](https://site.gympass.com)
-  - Backend development using Go in a distributed system architecture.
+  - Distributed system backend development on Tagus team, the heart of the Gympass business model.
 
 - May 2021/Jun 2022 - **Backend Software Enginner**, [Zup Innovation](https://www.zup.com.br/)
   - [Maintainer](https://github.com/ZupIT/horusec/commits?author=matheusalcantarazup) of 
@@ -31,7 +31,9 @@
 - [yay](https://github.com/Jguer/yay/commits?author=msAlcantara) Package management of Arch Linux
 - [Grafana](https://github.com/grafana/grafana/commits?author=msAlcantara) Monitoring and analysis of metrics and panels for Graphite, InfluxDB, Prometheus and more.
 - [Prometheus](https://github.com/prometheus/prometheus/commits?author=msAlcantara) Monitoring system and time series database. 
-- [PostgreSQL](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=6a1f082abac9da756d473e16238a906ca5a592dc) The World's Most Advanced Open Source Relational Database.
+- [PostgreSQL](https://www.postgresql.org/) The World's Most Advanced Open Source Relational Database.
+    - [Improvements on regression test coverage of Gist index](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=6a1f082abac9da756d473e16238a906ca5a592dc)
+    - [Remove duplicated assignment on JIT implementation](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=ccfca8ea42b8be09a509f68564f6ee13859285b1)
 
 
 ## Education
