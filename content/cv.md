@@ -43,6 +43,9 @@
   - Engineering and Administration of Database Systems
 
 
+## Personal projects
+I've build [tinydb](https://github.com/msAlcantara/tinydb), a simple database based on Postgresql to learn more about database in general. It implements the basics of Postgres wire protocol, a simple query planner and executor and a storage engine that use the [Heap data structure](https://en.wikipedia.org/wiki/Heap_(data_structure)) for file format.
+
 ## Programming languages
 - Confortable: Go, Python, Java
 - Familiar: C, C++, Rust
