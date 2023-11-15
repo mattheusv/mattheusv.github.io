@@ -16,10 +16,6 @@ DefaultContentLanguage = "en"
     url = "https://github.com/msAlcantara"
 
     [[params.socialIcons]]
-    name = "email"
-    url = "mailto:matheusssilv97@gmail.com"
-
-    [[params.socialIcons]]
     name = "twitter"
     url = "https://twitter.com/matheussilv__"
 
