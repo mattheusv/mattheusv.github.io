@@ -13,7 +13,7 @@ DefaultContentLanguage = "en"
 
     [[params.socialIcons]]
     name = "github"
-    url = "https://github.com/msAlcantara"
+    url = "https://github.com/mattheusv"
 
     [[params.socialIcons]]
     name = "twitter"
