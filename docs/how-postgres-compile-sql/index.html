@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Matheus Alcantara</title>
+<meta name="keywords" content="">
+<meta name="description" content="How PostgreSQL actually compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.">
+<meta name="author" content="">
+<link rel="canonical" href="https://msalcantara.github.io/how-postgres-compile-sql/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://msalcantara.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://msalcantara.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://msalcantara.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://msalcantara.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://msalcantara.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="How PostgreSQL actually compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://msalcantara.github.io/how-postgres-compile-sql/" /><meta property="article:section" content="" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="How PostgreSQL actually compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "",
+      "item": "https://msalcantara.github.io/how-postgres-compile-sql/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "How PostgreSQL actually compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.",
+  "keywords": [
+    
+  ],
+  "articleBody": "How PostgreSQL actually compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.\nHow Postgres decide if a SQL should be compiled or not? Postgres decide if a SQL expression should be compiled or not based on the cost of the query, if the estimated cost of the query is less than the setting jit_above_cost, then the query will be compiled using LLVM.\nLets see a practical example (make sure that the jit is enabled):\nset jit_above_cost = 200; create table t (a int, b int); insert into t(a, b) select g, g+1 from generate_series(1, 10000) g(g); explain(analyze) select a+b from t; We can see that the JIT was not used to execute this query\n┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐ │ QUERY PLAN │ ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤ │ Seq Scan on t (cost=0.00..170.00 rows=10000 width=4) (actual time=0.036..7.162 rows=10000 loops=1) │ │ Planning Time: 0.051 ms │ │ Execution Time: 8.159 ms │ └─────────────────────────────────────────────────────────────────────────────────────────────────────┘ Lets now change the jit_above_cost to a low value:\nset jit_above_cost = 10; explain(analyze) select a+b from t; We can see now that the query was compiled:\n┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │ QUERY PLAN │ ├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤ │ Seq Scan on t (cost=0.00..170.00 rows=10000 width=4) (actual time=1.467..6.440 rows=10000 loops=1) │ │ Planning Time: 0.048 ms │ │ JIT: │ │ Functions: 2 │ │ Options: Inlining false, Optimization false, Expressions true, Deforming true │ │ Timing: Generation 0.120 ms (Deform 0.045 ms), Inlining 0.000 ms, Optimization 0.094 ms, Emission 1.334 ms, Total 1.548 ms │ │ Execution Time: 7.563 ms │ └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ How a SQL expression is compiled The ExprState struct represents a SQL expression that can be executed, e.g; a+b or a = 1 from the following example:\nselect a+b from t where a = 1; The steps of an ExprState that the executor should execute is stored at ExprState-\u003esteps[] array. The ExecReadyInterpretedExpr function take care of executing these steps when a query is interpreted executed (via ExecInterpExpr). When the query is compiled using jit, ExecRunCompiledExpr will be called that will compile the llvm module created from the SQL expression. The llvm module with all SQL expressions that should be compiled is build at startup phase of executor via ExecReadyExpr using llvm_compile_expr under the hood.\nWhen a query is interpreted executed ExecInterpExpr iterates over ExprState-\u003esteps[] and execute each step sequentially, in the other hand when the query is compiled, the llvm_compile_expr iterate over this array of steps and emit llvm IR code that will later be compiled at ExecRunCompiledExpr as shared library.\nHow a LLVM module is created from SQL expressions Each ExprState generates a LLVM module that will be compiled, the a+b expression from the example above generates the following array of steps:\nEEOP_SCAN_FETCHSOME Fetch a specific number of attributes from a tuple (in this scenario 2 attributes, a and b) EEOP_SCAN_VAR Scan the a value from tuple values EEOP_SCAN_VAR Scan the b value from tuple values EEOP_FUNCEXPR_STRICT Execute the function that will sum a and b values EEOP_ASSIGN_TMP Assign the result of the function to a temporary variable EEOP_DONE Finish the execution Postgres will emit specialized LLVM IR code separately for each step inside ExprState. What I mean about specialized code is that for the EEOP_SCAN_FETCHSOME step for example, Postgres will emit code that will know exactly in how to read the table attributes from a tuple, and will not need to do switch case type checking at runtime for each attribute from each tuple in a table. The PostgreSQL C function that generate the tuple deforming LLVM function is slot_compile_deform.\n",
+  "wordCount" : "636",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://msalcantara.github.io/how-postgres-compile-sql/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Matheus Alcantara",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://msalcantara.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://msalcantara.github.io/" accesskey="h" title="Matheus Alcantara (Alt + H)">Matheus Alcantara</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://msalcantara.github.io/about" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://msalcantara.github.io/posts" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="how-postgresql-actually-compile-sql">How PostgreSQL actually compile SQL?<a hidden class="anchor" aria-hidden="true" href="#how-postgresql-actually-compile-sql">#</a></h1>
+<p>A few days ago, <a href="https://twitter.com/eatonphil">@eatonphil</a> organized a
+Postgres Internals wehack group on Discord for people interested in
+understanding and contributing to the PostgreSQL source code. I had previously
+tried to understand more about how SQL expressions are compiled using LLVM but
+without much success, with this encouragement I decided to go deeper and
+understand how PostgreSQL compiles SQL code, and here I will describe my
+understanding notes.</p>
+<h2 id="how-postgres-decide-if-a-sql-should-be-compiled-or-not">How Postgres decide if a SQL should be compiled or not?<a hidden class="anchor" aria-hidden="true" href="#how-postgres-decide-if-a-sql-should-be-compiled-or-not">#</a></h2>
+<p>Postgres decide if a SQL expression should be compiled or not based on the cost
+of the query, if the estimated cost of the query is less than the setting
+<a href="https://www.postgresql.org/docs/current/runtime-config-query.html#GUC-JIT-ABOVE-COST">jit_above_cost</a>, then the query will be
+compiled using LLVM.</p>
+<p>Lets see a practical example (make sure that the jit is enabled):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">set</span> jit_above_cost <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">table</span> t (a int, b int);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> t(a, b) <span style="color:#66d9ef">select</span> <span style="color:#66d9ef">g</span>, <span style="color:#66d9ef">g</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">from</span> generate_series(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10000</span>) <span style="color:#66d9ef">g</span>(<span style="color:#66d9ef">g</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">explain</span>(<span style="color:#66d9ef">analyze</span>) <span style="color:#66d9ef">select</span> a<span style="color:#f92672">+</span>b <span style="color:#66d9ef">from</span> t;
+</span></span></code></pre></div><p>We can see that the JIT was not used to execute this query</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                             QUERY PLAN                                              │
+├─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Seq Scan on t  (cost=0.00..170.00 rows=10000 width=4) (actual time=0.036..7.162 rows=10000 loops=1) │
+│ Planning Time: 0.051 ms                                                                             │
+│ Execution Time: 8.159 ms                                                                            │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────┘
+</code></pre><p>Lets now change the <code>jit_above_cost</code> to a low value:</p>
+<pre tabindex="0"><code>set jit_above_cost = 10;
+
+explain(analyze) select a+b from t;
+</code></pre><p>We can see now that the query was compiled:</p>
+<pre tabindex="0"><code>┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                          QUERY PLAN                                                          │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Seq Scan on t  (cost=0.00..170.00 rows=10000 width=4) (actual time=1.467..6.440 rows=10000 loops=1)                          │
+│ Planning Time: 0.048 ms                                                                                                      │
+│ JIT:                                                                                                                         │
+│   Functions: 2                                                                                                               │
+│   Options: Inlining false, Optimization false, Expressions true, Deforming true                                              │
+│   Timing: Generation 0.120 ms (Deform 0.045 ms), Inlining 0.000 ms, Optimization 0.094 ms, Emission 1.334 ms, Total 1.548 ms │
+│ Execution Time: 7.563 ms                                                                                                     │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+</code></pre><h2 id="how-a-sql-expression-is-compiled">How a SQL expression is compiled<a hidden class="anchor" aria-hidden="true" href="#how-a-sql-expression-is-compiled">#</a></h2>
+<p>The <code>ExprState</code> struct represents a SQL expression that can be executed, e.g;
+<code>a+b</code> or <code>a = 1</code> from the following example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> a<span style="color:#f92672">+</span>b <span style="color:#66d9ef">from</span> t <span style="color:#66d9ef">where</span> a <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span></code></pre></div><p>The steps of an <a href="internal/eligibility/eligibility_switch.go"><code>ExprState</code></a> that
+the executor should execute is stored at
+<a href="https://github.com/postgres/postgres/blob/master/src/include/nodes/execnodes.h#L77"><code>ExprState-&gt;steps[]</code></a>
+array. The
+<a href="https://github.com/postgres/postgres/blob/master/src/backend/executor/execExprInterp.c#L235"><code>ExecReadyInterpretedExpr</code></a>
+function take care of executing these steps when a query is interpreted
+executed (via <code>ExecInterpExpr</code>). When the query is compiled using jit,
+<a href="https://github.com/postgres/postgres/blob/master/src/backend/jit/llvm/llvmjit_expr.c#L2539"><code>ExecRunCompiledExpr</code></a>
+will be called that will compile the llvm module created from the SQL
+expression. The llvm module with all SQL expressions that should be compiled is
+build at startup phase of executor via <code>ExecReadyExpr</code> using
+<a href="https://github.com/postgres/postgres/blob/master/src/backend/jit/llvm/llvmjit_expr.c#L78"><code>llvm_compile_expr</code></a>
+under the hood.</p>
+<p>When a query is interpreted executed <code>ExecInterpExpr</code> iterates over
+<code>ExprState-&gt;steps[]</code> and execute each step sequentially, in the other hand when
+the query is compiled, the <code>llvm_compile_expr</code> iterate over this array of steps
+and emit llvm IR code that will later be compiled at <code>ExecRunCompiledExpr</code> as
+shared library.</p>
+<h2 id="how-a-llvm-module-is-created-from-sql-expressions">How a LLVM module is created from SQL expressions<a hidden class="anchor" aria-hidden="true" href="#how-a-llvm-module-is-created-from-sql-expressions">#</a></h2>
+<p>Each <code>ExprState</code> generates a LLVM module that will be compiled, the <code>a+b</code>
+expression from the example above generates the following array of steps:</p>
+<ul>
+<li>EEOP_SCAN_FETCHSOME
+<ul>
+<li><a href="https://github.com/postgres/postgres/blob/master/src/backend/executor/execExprInterp.c#L554">Fetch a specific number of attributes from a tuple</a> (in this scenario 2 attributes, <code>a</code> and <code>b</code>)</li>
+</ul>
+</li>
+<li>EEOP_SCAN_VAR
+<ul>
+<li><a href="https://github.com/postgres/postgres/blob/master/src/backend/executor/execExprInterp.c#L596">Scan the <code>a</code> value from tuple values</a></li>
+</ul>
+</li>
+<li>EEOP_SCAN_VAR
+<ul>
+<li>Scan the <code>b</code> value from tuple values</li>
+</ul>
+</li>
+<li>EEOP_FUNCEXPR_STRICT
+<ul>
+<li>Execute the function that will sum <code>a</code> and <code>b</code> values</li>
+</ul>
+</li>
+<li>EEOP_ASSIGN_TMP
+<ul>
+<li>Assign the result of the function to a temporary variable</li>
+</ul>
+</li>
+<li>EEOP_DONE
+<ul>
+<li>Finish the execution</li>
+</ul>
+</li>
+</ul>
+<p>Postgres will emit specialized LLVM IR code separately for each step inside
+<code>ExprState</code>. What I mean about specialized code is that for the
+<code>EEOP_SCAN_FETCHSOME</code> step for example, Postgres will emit code that will know
+exactly in how to read the table attributes from a tuple, and <a href="https://github.com/postgres/postgres/blob/master/src/backend/executor/execTuples.c#L1006">will not need to
+do switch case type checking at
+runtime</a>
+for each attribute from each tuple in a table. The PostgreSQL C function that
+generate the tuple deforming LLVM function is
+<a href="https://github.com/postgres/postgres/blob/master/src/backend/jit/llvm/llvmjit_deform.c#L34">slot_compile_deform</a>.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://msalcantara.github.io/">Matheus Alcantara</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
