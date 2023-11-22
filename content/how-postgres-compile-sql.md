@@ -1,4 +1,4 @@
-# How PostgreSQL actually compile SQL?
+# How PostgreSQL compile SQL?
 
 A few days ago, [@eatonphil](https://twitter.com/eatonphil) organized a
 Postgres Internals wehack group on Discord for people interested in
@@ -6,8 +6,10 @@ understanding and contributing to the PostgreSQL source code. I had previously
 tried to understand more about how SQL expressions are compiled using LLVM but
 without much success, with this encouragement I decided to go deeper and
 understand how PostgreSQL compiles SQL code, and here I will describe my
-understanding notes. Please let me know if something is not right, I'm just a
-curious guy trying to understand PostgreSQL source code.
+understanding notes. 
+
+Please let me know if something is not right, I'm just a curious guy trying to
+understand Postgres source code.
 
 
 ## How Postgres decide if a SQL should be compiled or not?
@@ -63,13 +65,14 @@ We can see now that the query was compiled:
 ```
 
 ## How a SQL expression is compiled
-PostgreSQL query plans are represented as a tree, [each Plan node may have
-expression trees associated with it, to represent its target list,
+Postgres query plans are represented as a tree, [each Plan node on the tree may
+have expression trees associated with it, to represent its target list,
 qualification conditions,
 etc.](https://github.com/postgres/postgres/blob/master/src/backend/executor/README#L68)
 An expression tree is represented by the
 [`ExprState`](https://github.com/postgres/postgres/blob/master/src/include/nodes/execnodes.h#L77)
-struct which contains the instructions that the PostgreSQL query executor should run.
+struct which contains the instructions that the Postgres query executor should
+run.
 
 Consider the following SQL:
 ```sql
@@ -91,25 +94,90 @@ The expression `a+b` is represented by an `ExprState` that contains the followin
 - EEOP_DONE
     - Finish the expression execution
 
-When an interpreted approach is used to execute a SQL expression, PostgreSQL
+When an interpreted approach is used to execute a SQL expression, Postgres
 will use the
 [`ExecInterpExpr`](https://github.com/postgres/postgres/blob/master/src/backend/executor/execExprInterp.c#L395)
 function to iterate over the list of steps (at `ExprState->steps[]`) and then
 execute each step sequentially. On the other hand, when a SQL expression is
-compiled, PostgreSQL use the
+compiled, Postgres use the
 [`ExecRunCompiledExpr`](https://github.com/postgres/postgres/blob/master/src/backend/jit/llvm/llvmjit_expr.c#L2539)
-function that will compile a LLVM module to a static library.
+function that will compile the SQL expression into LLVM module and then load as
+a shared library to execute it.
 
 ## How a LLVM module is created from SQL expressions
 A LLVM module with all SQL expressions that should be compiled is build at
-startup phase (when some preparation of execution is usually done) of executor
-via `ExecReadyExpr`, by calling the
+startup phase  of executor (when some preparation of execution is usually done)
+via `ExecReadyExpr` function.  The
 [`llvm_compile_expr`](https://github.com/postgres/postgres/blob/master/src/backend/jit/llvm/llvmjit_expr.c#L78)
-internally that will actually emit the LLVM IR code. 
+is used internally to emit the LLVM IR code. Each `ExprState` generates a LLVM
+module to be compiled and for each step on `ExprState->steps[]` array, Postgres
+will emit a LLVM IR code to execute this step. 
+
+When executing the SQL expression `a + b` interpreted, Postgres calls the
+[`fetch_att`]() function to fetch each column value from a single tuple, and to
+do this, a switch case on the length of data type is necessary to know how to
+read the actual value from the page tuple. When compiling this same expression
+Postgres will emit a LLVM code that will already know that the data type of
+both columns is an int32, so the switch case statement will not be necessary,
+which can reduce the query execution time when running for multiple tuples. 
+
+For the `EEOP_SCAN_FETCHSOME` step for example, the [slot_compile_deform](https://github.com/postgres/postgres/blob/master/src/backend/jit/llvm/llvmjit_deform.c#L34)
+function is used to generate the LLVM code that know exactly how to interpret
+the datum values of a tuple without doing the switch case statements. The LLVM code
+that would be compiled in this case will always work on datum values assuming
+the data types is always an int32.
+
+{{< details "If you are curious about how the LLVM code for this scenario looks like" >}}
+```llvm
+; Function Attrs: mustprogress nofree norecurse nosync nounwind uwtable willreturn writeonly
+define internal void @deform_0_1(%struct.TupleTableSlot* nocapture noundef writeonly align 8 %0) #0 {
+entry:
+  %1 = getelementptr inbounds %struct.TupleTableSlot, %struct.TupleTableSlot* %0, i32 0, i32 5
+  %tts_values = load i64*, i64** %1, align 8
+  %2 = getelementptr inbounds %struct.TupleTableSlot, %struct.TupleTableSlot* %0, i32 0, i32 6
+  %tts_ISNULL = load i8*, i8** %2, align 8
+  %3 = getelementptr inbounds %struct.TupleTableSlot, %struct.TupleTableSlot* %0, i32 0, i32 1
+  %4 = getelementptr inbounds %struct.TupleTableSlot, %struct.TupleTableSlot* %0, i32 0, i32 2
+  %heapslot = bitcast %struct.TupleTableSlot* %0 to %struct.HeapTupleTableSlot*
+  %5 = getelementptr inbounds %struct.HeapTupleTableSlot, %struct.HeapTupleTableSlot* %heapslot, i32 0, i32 2
+  %6 = getelementptr inbounds %struct.HeapTupleTableSlot, %struct.HeapTupleTableSlot* %heapslot, i32 0, i32 1
+  %tupleheader = load %struct.HeapTupleData*, %struct.HeapTupleData** %6, align 8
+  %7 = getelementptr inbounds %struct.HeapTupleData, %struct.HeapTupleData* %tupleheader, i32 0, i32 3
+  %tuple = load %struct.HeapTupleHeaderData*, %struct.HeapTupleHeaderData** %7, align 8
+  %8 = getelementptr inbounds %struct.HeapTupleHeaderData, %struct.HeapTupleHeaderData* %tuple, i32 0, i32 5
+  %t_bits = bitcast [0 x i8]* %8 to i8*
+  %9 = getelementptr inbounds %struct.HeapTupleHeaderData, %struct.HeapTupleHeaderData* %tuple, i32 0, i32 3
+  %infomask1 = load i16, i16* %9, align 2
+  %10 = getelementptr inbounds %struct.HeapTupleHeaderData, %struct.HeapTupleHeaderData* %tuple, i32 0, i32 2
+  %infomask2 = load i16, i16* %10, align 2
+  %11 = and i16 1, %infomask1
+  %hasnulls = icmp ne i16 %11, 0
+  %maxatt = and i16 2047, %infomask2
+  %12 = getelementptr inbounds %struct.HeapTupleHeaderData, %struct.HeapTupleHeaderData* %tuple, i32 0, i32 4
+  %13 = load i8, i8* %12, align 1
+  %t_hoff = zext i8 %13 to i32
+  %14 = bitcast %struct.HeapTupleHeaderData* %tuple to i8*
+  %v_tupdata_base = getelementptr i8, i8* %14, i32 %t_hoff
+  %v_slot_off = load i32, i32* %5, align 4
+  %15 = zext i32 %v_slot_off to i64
+  %16 = icmp ult i16 %maxatt, 2
+  br i1 %16, label %adjust_unavail_cols, label %find_startblock
+```
+{{< /details >}}
+
+## Next steps
+As far as I understood the overall flow of how SQL is actually compiled on
+Postgres I wish now I could understand more about how LLVM APIs is used to
+compile more complex expressions and then maybe try to play around with adding
+support for jit to a new expression.
+
 
 
 
 <!-- 
+-- Some Other notes:
+-------------------
+
 The [`ExprState`](https://github.com/postgres/postgres/blob/master/src/include/nodes/execnodes.h#L77) struct represents a SQL expression that can be executed, e.g; 
 `a+b` or `a = 1` from the following example:
 ```sql
