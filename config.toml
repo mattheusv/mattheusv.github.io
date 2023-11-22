@@ -31,16 +31,16 @@ DefaultContentLanguage = "en"
             subtitle = ""
 
             [[languages.en.params.profileMode.buttons]]
-            name = "Posts"
-            url = "/posts"
+            name = "Notes"
+            url = "/notes"
             [[languages.en.params.profileMode.buttons]]
             name = "About"
             url = "/about"
 
         [[languages.en.menu.main]]
-        identifier = "posts"
-        name       = "Posts"
-        url        = "/posts"
+        identifier = "notes"
+        name       = "Notes"
+        url        = "/notes"
 
         [[languages.en.menu.main]]
         identifier = "about"

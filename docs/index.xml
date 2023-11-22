@@ -42,16 +42,7 @@ Maintainer of Horusec; open source security command line tool. Development of a 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://mattheusv.github.io/notes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://mattheusv.github.io/posts/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://mattheusv.github.io/posts/</guid>
-      <description>Coming soon&amp;hellip;</description>
+      <description>Nov 15, 2023 How PostgreSQL actual compile SQL? </description>
     </item>
     
   </channel>
