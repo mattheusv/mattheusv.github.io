@@ -53,17 +53,6 @@
 - Confortable: Go, Python, Java
 - Familiar: C, C++, Rust
 
-## Tools
- - AWS
- - Git
- - Linux
- - Docker
- - Kubernetes
- - RabbitMQ
- - PostgreSQL
- - Prometheus
- - Grafana
-
 
 ## Additional Information
 - Proficient in English, currently at Gympass all communication is carried out in English.
