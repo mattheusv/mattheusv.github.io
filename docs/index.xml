@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Matheus Alcantara</title>
-    <link>https://mattheusv.github.io/</link>
+    <link>http://localhost:1313/</link>
     <description>Recent content on Matheus Alcantara</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="https://mattheusv.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
-      <link>https://mattheusv.github.io/about/</link>
+      <link>http://localhost:1313/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://mattheusv.github.io/about/</guid>
+      <guid>http://localhost:1313/about/</guid>
       <description>Hello! I&amp;rsquo;m Matheus, a programmer who loves programming languages and databases. If you want to contact me, please write an e-mail (address is on the GitHub profile).
 Resume</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://mattheusv.github.io/cv/</link>
+      <link>http://localhost:1313/cv/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://mattheusv.github.io/cv/</guid>
+      <guid>http://localhost:1313/cv/</guid>
       <description>Experience Jun 2022/Present - Software Enginner, Gympass
 Distributed system backend development on Tagus team, the heart of the Gympass business model. May 2021/Jun 2022 - Backend Software Enginner, Zup Innovation
 Maintainer of Horusec; open source security command line tool. Development of a semantic analysis engine that uses compiler techniques such as SSA and Data Flow Analysis to improve the accuracy of static code analysis. Jul 2020/May 2021 - Software Enginner, Konker</description>
@@ -29,20 +29,29 @@ Maintainer of Horusec; open source security command line tool. Development of a 
     
     <item>
       <title></title>
-      <link>https://mattheusv.github.io/how-postgres-compile-sql/</link>
+      <link>http://localhost:1313/notes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://mattheusv.github.io/how-postgres-compile-sql/</guid>
+      <guid>http://localhost:1313/notes/</guid>
+      <description>Nov 22, 2023 How PostgreSQL compile SQL? </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://localhost:1313/notes/how-postgres-compile-sql/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/notes/how-postgres-compile-sql/</guid>
       <description>How PostgreSQL compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://mattheusv.github.io/notes/</link>
+      <link>http://localhost:1313/papers/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://mattheusv.github.io/notes/</guid>
-      <description>Nov 22, 2023 How PostgreSQL compile SQL? </description>
+      <guid>http://localhost:1313/papers/</guid>
+      <description>1. Exploiting Cloud Object Storage for High-Performance Analytics - 2023 </description>
     </item>
     
   </channel>

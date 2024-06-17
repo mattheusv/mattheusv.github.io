@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Matheus Alcantara</title>
 <meta name="keywords" content="">
 <meta name="description" content="How PostgreSQL compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.">
 <meta name="author" content="">
-<link rel="canonical" href="https://mattheusv.github.io/how-postgres-compile-sql/">
+<link rel="canonical" href="http://localhost:1313/notes/how-postgres-compile-sql/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://mattheusv.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://mattheusv.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://mattheusv.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://mattheusv.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://mattheusv.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/notes/how-postgres-compile-sql/">
 <noscript>
     <style>
         #theme-toggle,
@@ -56,61 +57,7 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="" />
-<meta property="og:description" content="How PostgreSQL compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://mattheusv.github.io/how-postgres-compile-sql/" /><meta property="article:section" content="" />
-
-
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="How PostgreSQL compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes."/>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "",
-      "item": "https://mattheusv.github.io/how-postgres-compile-sql/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "",
-  "name": "",
-  "description": "How PostgreSQL compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.",
-  "keywords": [
-    
-  ],
-  "articleBody": "How PostgreSQL compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.\nPlease let me know if something is not right, I’m just a curious guy trying to understand Postgres source code.\nHow Postgres decide if a SQL should be compiled or not? Postgres decide if a SQL expression should be compiled or not based on the cost of the query, if the estimated cost of the query is less than the setting jit_above_cost, then the query will be compiled using LLVM.\nLets see a practical example (make sure that the jit is enabled):\nset jit_above_cost = 200; create table t (a int, b int); insert into t(a, b) select g, g+1 from generate_series(1, 10000) g(g); explain(analyze) select a+b from t; We can see that the JIT was not used to execute this query\n┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐ │ QUERY PLAN │ ├─────────────────────────────────────────────────────────────────────────────────────────────────────┤ │ Seq Scan on t (cost=0.00..170.00 rows=10000 width=4) (actual time=0.036..7.162 rows=10000 loops=1) │ │ Planning Time: 0.051 ms │ │ Execution Time: 8.159 ms │ └─────────────────────────────────────────────────────────────────────────────────────────────────────┘ Lets now change the jit_above_cost to a low value:\nset jit_above_cost = 10; explain(analyze) select a+b from t; We can see now that the query was compiled:\n┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │ QUERY PLAN │ ├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤ │ Seq Scan on t (cost=0.00..170.00 rows=10000 width=4) (actual time=1.467..6.440 rows=10000 loops=1) │ │ Planning Time: 0.048 ms │ │ JIT: │ │ Functions: 2 │ │ Options: Inlining false, Optimization false, Expressions true, Deforming true │ │ Timing: Generation 0.120 ms (Deform 0.045 ms), Inlining 0.000 ms, Optimization 0.094 ms, Emission 1.334 ms, Total 1.548 ms │ │ Execution Time: 7.563 ms │ └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ How a SQL expression is compiled Postgres query plans are represented as a tree, each Plan node on the tree may have expression trees associated with it, to represent its target list, qualification conditions, etc. An expression tree is represented by the ExprState struct which contains the instructions that the Postgres query executor should run.\nConsider the following SQL:\nselect a+b from t where a = 1; The expression a+b is represented by an ExprState that contains the following list of steps that should be executed:\nEEOP_SCAN_FETCHSOME Fetch a specific number of attributes from a tuple (in this scenario 2 attributes, a and b) EEOP_SCAN_VAR Scan the a value from tuple values EEOP_SCAN_VAR Scan the b value from tuple values EEOP_FUNCEXPR_STRICT Execute the function that will sum a and b values EEOP_ASSIGN_TMP Assign the result of the function to a temporary variable EEOP_DONE Finish the expression execution When an interpreted approach is used to execute a SQL expression, Postgres will use the ExecInterpExpr function to iterate over the list of steps (at ExprState-\u003esteps[]) and then execute each step sequentially. On the other hand, when a SQL expression is compiled, Postgres use the ExecRunCompiledExpr function that will compile the SQL expression into LLVM module and then load as a shared library to execute it.\nHow a LLVM module is created from SQL expressions A LLVM module with all SQL expressions that should be compiled is build at startup phase of executor (when some preparation of execution is usually done) via ExecReadyExpr function. The llvm_compile_expr is used internally to emit the LLVM IR code. Each ExprState generates a LLVM module to be compiled and for each step on ExprState-\u003esteps[] array, Postgres will emit a LLVM IR code to execute this step.\nWhen executing the SQL expression a + b interpreted, Postgres calls the fetch_att function to fetch each column value from a single tuple, and to do this, a switch case on the length of data type is necessary to know how to read the actual value from the page tuple. When compiling this same expression Postgres will emit a LLVM code that will already know that the data type of both columns is an int32, so the switch case statement will not be necessary, which can reduce the query execution time when running for multiple tuples.\nFor the EEOP_SCAN_FETCHSOME step for example, the slot_compile_deform function is used to generate the LLVM code that know exactly how to interpret the datum values of a tuple without doing the switch case statements. The LLVM code that would be compiled in this case will always work on datum values assuming the data types is always an int32.\nIf you are curious about how the LLVM code for this scenario looks like ; Function Attrs: mustprogress nofree norecurse nosync nounwind uwtable willreturn writeonly define internal void @deform_0_1(%struct.TupleTableSlot* nocapture noundef writeonly align 8 %0) #0 { entry: %1 = getelementptr inbounds %struct.TupleTableSlot, %struct.TupleTableSlot* %0, i32 0, i32 5 %tts_values = load i64*, i64** %1, align 8 %2 = getelementptr inbounds %struct.TupleTableSlot, %struct.TupleTableSlot* %0, i32 0, i32 6 %tts_ISNULL = load i8*, i8** %2, align 8 %3 = getelementptr inbounds %struct.TupleTableSlot, %struct.TupleTableSlot* %0, i32 0, i32 1 %4 = getelementptr inbounds %struct.TupleTableSlot, %struct.TupleTableSlot* %0, i32 0, i32 2 %heapslot = bitcast %struct.TupleTableSlot* %0 to %struct.HeapTupleTableSlot* %5 = getelementptr inbounds %struct.HeapTupleTableSlot, %struct.HeapTupleTableSlot* %heapslot, i32 0, i32 2 %6 = getelementptr inbounds %struct.HeapTupleTableSlot, %struct.HeapTupleTableSlot* %heapslot, i32 0, i32 1 %tupleheader = load %struct.HeapTupleData*, %struct.HeapTupleData** %6, align 8 %7 = getelementptr inbounds %struct.HeapTupleData, %struct.HeapTupleData* %tupleheader, i32 0, i32 3 %tuple = load %struct.HeapTupleHeaderData*, %struct.HeapTupleHeaderData** %7, align 8 %8 = getelementptr inbounds %struct.HeapTupleHeaderData, %struct.HeapTupleHeaderData* %tuple, i32 0, i32 5 %t_bits = bitcast [0 x i8]* %8 to i8* %9 = getelementptr inbounds %struct.HeapTupleHeaderData, %struct.HeapTupleHeaderData* %tuple, i32 0, i32 3 %infomask1 = load i16, i16* %9, align 2 %10 = getelementptr inbounds %struct.HeapTupleHeaderData, %struct.HeapTupleHeaderData* %tuple, i32 0, i32 2 %infomask2 = load i16, i16* %10, align 2 %11 = and i16 1, %infomask1 %hasnulls = icmp ne i16 %11, 0 %maxatt = and i16 2047, %infomask2 %12 = getelementptr inbounds %struct.HeapTupleHeaderData, %struct.HeapTupleHeaderData* %tuple, i32 0, i32 4 %13 = load i8, i8* %12, align 1 %t_hoff = zext i8 %13 to i32 %14 = bitcast %struct.HeapTupleHeaderData* %tuple to i8* %v_tupdata_base = getelementptr i8, i8* %14, i32 %t_hoff %v_slot_off = load i32, i32* %5, align 4 %15 = zext i32 %v_slot_off to i64 %16 = icmp ult i16 %maxatt, 2 br i1 %16, label %adjust_unavail_cols, label %find_startblock Next steps As far as I understood the overall flow of how SQL is actually compiled on Postgres I wish now I could understand more about how LLVM APIs is used to compile more complex expressions and then maybe try to play around with adding support for jit to a new expression.\n",
-  "wordCount" : "1119",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://mattheusv.github.io/how-postgres-compile-sql/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Matheus Alcantara",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://mattheusv.github.io/favicon.ico"
-    }
-  }
-}
-</script>
+</noscript>
 </head>
 
 <body class="" id="top">
@@ -128,7 +75,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://mattheusv.github.io/" accesskey="h" title="Matheus Alcantara (Alt + H)">Matheus Alcantara</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Matheus Alcantara (Alt + H)">Matheus Alcantara</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -150,16 +97,18 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
             <li>
-                <a href="https://mattheusv.github.io/about" title="About">
+                <a href="http://localhost:1313/about" title="About">
                     <span>About</span>
                 </a>
             </li>
             <li>
-                <a href="https://mattheusv.github.io/notes" title="Notes">
+                <a href="http://localhost:1313/notes" title="Notes">
                     <span>Notes</span>
                 </a>
             </li>
@@ -287,7 +236,7 @@ is used internally to emit the LLVM IR code. Each <code>ExprState</code> generat
 module to be compiled and for each step on <code>ExprState-&gt;steps[]</code> array, Postgres
 will emit a LLVM IR code to execute this step.</p>
 <p>When executing the SQL expression <code>a + b</code> interpreted, Postgres calls the
-<a href=""><code>fetch_att</code></a> function to fetch each column value from a single tuple, and to
+<a href="/"><code>fetch_att</code></a> function to fetch each column value from a single tuple, and to
 do this, a switch case on the length of data type is necessary to know how to
 read the actual value from the page tuple. When compiling this same expression
 Postgres will emit a LLVM code that will already know that the data type of
@@ -355,7 +304,7 @@ support for jit to a new expression.</p>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2023 <a href="https://mattheusv.github.io/">Matheus Alcantara</a></span>
+    <span>&copy; 2024 <a href="http://localhost:1313/">Matheus Alcantara</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
