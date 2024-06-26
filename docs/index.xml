@@ -46,5 +46,24 @@ Maintainer of Horusec; open source security command line tool.</description>
       <description>How PostgreSQL compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.</description>
     </item>
     
+    <item>
+      <title></title>
+      <link>http://localhost:1313/papers/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/papers/</guid>
+      <description>1. Exploiting Cloud Object Storage for High-Performance Analytics - 2023 </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://localhost:1313/papers/umbra-anyblob/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/papers/umbra-anyblob/</guid>
+      <description>Exploiting Cloud Object Storage for High-Performance Analytics (2023) The paper presents the AnyBlob; A cloud based object store download manager based on io-uring for query engines that optimizes throughput while minimizing CPU usage.
+Due the recently improvements on network bandwidth on cloud providers it is more viable to use remote storages for high-performance query analytics. In 2018 AWS introduce instances with 100 Gbit/s networking, which improves severely the latency and close the gap between local file systems and remote storages.</description>
+    </item>
+    
   </channel>
 </rss>

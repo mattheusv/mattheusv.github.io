@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Matheus Alcantara</title>
+<meta name="keywords" content="">
+<meta name="description" content="Exploiting Cloud Object Storage for High-Performance Analytics (2023) The paper presents the AnyBlob; A cloud based object store download manager based on io-uring for query engines that optimizes throughput while minimizing CPU usage.
+Due the recently improvements on network bandwidth on cloud providers it is more viable to use remote storages for high-performance query analytics. In 2018 AWS introduce instances with 100 Gbit/s networking, which improves severely the latency and close the gap between local file systems and remote storages.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/papers/umbra-anyblob/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/papers/umbra-anyblob/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Matheus Alcantara (Alt + H)">Matheus Alcantara</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/about" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/notes" title="Notes">
+                    <span>Notes</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/papers" title="Papers">
+                    <span>Papers</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><h3 id="exploiting-cloud-object-storage-for-high-performance-analytics-2023httpsdlacmorgdoiabs101477836114793611486"><a href="https://dl.acm.org/doi/abs/10.14778/3611479.3611486">Exploiting Cloud Object Storage for High-Performance Analytics (2023)</a><a hidden class="anchor" aria-hidden="true" href="#exploiting-cloud-object-storage-for-high-performance-analytics-2023httpsdlacmorgdoiabs101477836114793611486">#</a></h3>
+<p>The paper presents the AnyBlob; A cloud based object store download manager based on io-uring for query engines that
+optimizes throughput while minimizing CPU usage.</p>
+<p>Due the recently improvements on network bandwidth on cloud providers it is more viable to use remote storages for
+high-performance query analytics. In 2018 AWS introduce instances with 100 Gbit/s networking, which improves severely
+the latency and close the gap between local file systems and remote storages.</p>
+<p>Previously researches focus mostly on OLTP databases and using cache to avoid fetch data from remote storage, Anyblob on
+the other hand demonstrate that even without caching it achieves similar performance to state-of-the-art cloud data
+warehouses that cache data on local SSDs while improving resource elasticity.</p>
+<p>Anyblob use io_uring to manage multiple object store downloads per thread asynchronously. With this model, the system
+does not have to spawn too many threads to download these objects in parallel which would increase the CPU usage due to
+kernel thread scheduling.</p>
+<h3 id="io_uring">io_uring<a hidden class="anchor" aria-hidden="true" href="#io_uring">#</a></h3>
+<p>io_uring is a Linux specific asynchronous I/O API that allows the user to submit one or more I/O requests, which are
+processed asynchronously without blocking the calling process.</p>
+<p>io_uring use a pair of lock-free ring buffers in shared memory that are used as queues between user and kernel space.</p>
+<ul>
+<li>Submission queue entry (SQE): The user process use the submission queue to send asynchronous I/O requests to the kernel.</li>
+<li>Completion queue entry (CQE): Once the I/O request is finished the Kernel use the completion queue to send asynchronous
+I/O results.</li>
+</ul>
+<p>Using io_uring the query engine need to spawn fewer threads to download objects from the remote storage in parallel,
+which can dramatically reduce the CPU usage.</p>
+<p>The basic flow is, the user inserts new SQE&rsquo;s, such as <code>recv</code> and <code>send</code> operations into the submission queue and then
+to check if a request was successful, the user periodically peeks for available CQE&rsquo;s.  Inserting into the queue does
+not require any system call, so the user can batch multiple operations into the queue and then execute all of them in a
+single system call asynchronously.</p>
+<h3 id="object-storage-cost">Object storage cost<a hidden class="anchor" aria-hidden="true" href="#object-storage-cost">#</a></h3>
+<p>The paper also discuss about object storage costs. A interesting detail is about the optional request size. Download
+requests can either be full objects or byte ranges within objects. Cloud providers usually charge by the number of
+requests, large requests result in lower cost for the same overall data size, on the other hand, the size should be as
+small as possible so that small tables can benefit from parallel downloads. The experiments shows that request sizes of
+8 - 16 MiB are cost-throughput optional for OLAP.</p>
+<p>It&rsquo;s important to keep in mind that all experiments developed on this paper was using unsecured connection to S3 using
+HTTP. It&rsquo;s because HTTPS requires more than 2X CPU resources of HTTP, and at AWS, all traffic be- tween regions and even
+all traffic between AZs is automatically encrypted by the network infrastructure.  Within a location, no other user is
+able to intercept traffic between an EC2 instance and the S3 gateway due to the isolation of VPCs, making HTTPS
+superfluous. However, encryption-at-rest is required to ensure full data encryption outside the instance (e.g., at S3).</p>
+<h3 id="anyblob-design">Anyblob Design<a hidden class="anchor" aria-hidden="true" href="#anyblob-design">#</a></h3>
+<p>Anyblob use a state machine for each request when downloading an object from a remote storage. An object download
+request is represented by a <code>Message Task</code> which is associated with the state machine. The message task is divided into
+multiple phases. On successfully completing a phase the state machine go to the next phase until the object is fully
+download from the remote storage. The state machine enables asynchronous and multiplexed messages with a single thread.
+Several <code>send</code> and <code>recv</code> system calls are required during transfer until the object is downloaded. After each system
+call, Anyblob suspend the execution of the message until it is notified about the successful syscall. Each SQE has a
+user-defined member that allows passing information to later identify its origin Message Task. The uring is periodically
+checked for available completion queue entries (CQE). When a CQE is available, a system call has been processed. With
+the retrieved information, Anyblob can evaluate the next Message Task step</p>
+<h3 id="database-engine-design">Database Engine Design<a hidden class="anchor" aria-hidden="true" href="#database-engine-design">#</a></h3>
+<p>Anyblob was integrated with the DBMS <a href="https://umbra-db.com/">Umbra</a>. Like most database systems, Umbra uses a pool of
+worker threads to process queries in parallel, the difference here is that Umbra use these worker threads to process
+queries and also to download objects from remote storages.To overcome issues with long-running queries that block
+resources, many database systems use tasks to process queries. These tasks can either be suspended or run only for a
+small amount of time. Umbra tasks consist of morsels which describe a small chuck of data of the task. Worker threads
+are assigned to tasks and process morsels until the task is finished. The main difference of this approach is that
+workers do not only need to process data but also retrieve new blocks from the remote storage to processing. After
+receiving a morsel for processing, the thread scans and filters the data according to the semantics of the table scan.
+When all morsels of an active block are taken, the thread picks the morsel from a new, already retrieved block.</p>
+<p>Umbra use a scheduler to download objects from the remote storage to process the data. The main goal of the object
+scheduler is to strike a balance between pro- cessing and retrieval performance. It assigns different jobs to the
+available worker threads to achieve this balance. If the retrieval performance is lower than the scan performance, it
+increases the amount of retrieval and preparation threads. On the other hand, re- ducing the number of retrieval threads
+results in higher processing throughput.</p>
+<h3 id="performance">Performance<a hidden class="anchor" aria-hidden="true" href="#performance">#</a></h3>
+<p>By simply swapping the retrieval library from the asynchronous AWS SDK to AnyBlob, Umbra achieves up to a factor of 1.2×
+better performance and an improvement of up to 40% on computationally expensive queries. Additionally, AnyBlob reduces
+the mean CPU usage by up to 25%. Umbra also achieves an average CPU utilization of ∼75% with asynchronous networking.
+Networking uses a large share of CPU time that accounts for up to 25% of the total utilization, significantly reduced by
+AnyBlob.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="http://localhost:1313/">Matheus Alcantara</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

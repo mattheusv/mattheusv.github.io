@@ -43,6 +43,11 @@ DefaultContentLanguage = "en"
         url        = "/notes"
 
         [[languages.en.menu.main]]
+        identifier = "papers"
+        name = "Papers"
+        url = "/papers"
+
+        [[languages.en.menu.main]]
         identifier = "about"
         name = "About"
         url = "/about"
