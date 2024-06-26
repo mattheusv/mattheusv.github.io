@@ -22,9 +22,10 @@ Resume</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://localhost:1313/cv/</guid>
-      <description>Experience Jun 2022/Present - Software Enginner, Gympass
-Distributed system backend development on Tagus team, the heart of the Gympass business model. May 2021/Jun 2022 - Backend Software Enginner, Zup Innovation
-Maintainer of Horusec; open source security command line tool. Development of a semantic analysis engine that uses compiler techniques such as SSA and Data Flow Analysis to improve the accuracy of static code analysis. Jul 2020/May 2021 - Software Enginner, Konker</description>
+      <description>Experience Jan 2024/Present - Data Engineer, Gympass
+Development of tools to integrate different analytic systems such as Trino and Hive. Jun 2022/Jan 2024 - Software Enginner, Gympass
+Distributed system backend development on Tagus team, the heart of the Gympass business model. Work different systems to make it possible to Gympass fully migrate from a monolith to a microservice architecture. May 2021/Jun 2022 - Backend Software Enginner, Zup Innovation
+Maintainer of Horusec; open source security command line tool.</description>
     </item>
     
     <item>
@@ -43,15 +44,6 @@ Maintainer of Horusec; open source security command line tool. Development of a 
       
       <guid>http://localhost:1313/notes/how-postgres-compile-sql/</guid>
       <description>How PostgreSQL compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>http://localhost:1313/papers/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://localhost:1313/papers/</guid>
-      <description>1. Exploiting Cloud Object Storage for High-Performance Analytics - 2023 </description>
     </item>
     
   </channel>
