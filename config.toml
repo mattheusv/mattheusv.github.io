@@ -23,6 +23,9 @@ DefaultContentLanguage = "en"
     name = "linkedin"
     url = "https://www.linkedin.com/in/matheus-alcantara/?locale=en_US"
 
+[params.meta]
+    favicon = false
+
 [languages]
     [languages.en]
         [languages.en.params.profileMode]

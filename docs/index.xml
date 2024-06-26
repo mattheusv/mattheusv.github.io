@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Matheus Alcantara</title>
-    <link>http://localhost:1313/</link>
+    <link>https://mattheusv.github.io/</link>
     <description>Recent content on Matheus Alcantara</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language><atom:link href="https://mattheusv.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
-      <link>http://localhost:1313/about/</link>
+      <link>https://mattheusv.github.io/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/about/</guid>
+      <guid>https://mattheusv.github.io/about/</guid>
       <description>Hello! I&amp;rsquo;m Matheus, a programmer who loves programming languages and databases. If you want to contact me, please write an e-mail (address is on the GitHub profile).
 Resume</description>
     </item>
     
     <item>
       <title></title>
-      <link>http://localhost:1313/cv/</link>
+      <link>https://mattheusv.github.io/cv/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/cv/</guid>
+      <guid>https://mattheusv.github.io/cv/</guid>
       <description>Experience Jan 2024/Present - Data Engineer, Gympass
 Development of tools to integrate different analytic systems such as Trino and Hive. Jun 2022/Jan 2024 - Software Enginner, Gympass
 Distributed system backend development on Tagus team, the heart of the Gympass business model. Work different systems to make it possible to Gympass fully migrate from a monolith to a microservice architecture. May 2021/Jun 2022 - Backend Software Enginner, Zup Innovation
@@ -30,37 +30,37 @@ Maintainer of Horusec; open source security command line tool.</description>
     
     <item>
       <title></title>
-      <link>http://localhost:1313/notes/</link>
+      <link>https://mattheusv.github.io/notes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/notes/</guid>
+      <guid>https://mattheusv.github.io/notes/</guid>
       <description>Nov 22, 2023 How PostgreSQL compile SQL? </description>
     </item>
     
     <item>
       <title></title>
-      <link>http://localhost:1313/notes/how-postgres-compile-sql/</link>
+      <link>https://mattheusv.github.io/notes/how-postgres-compile-sql/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/notes/how-postgres-compile-sql/</guid>
+      <guid>https://mattheusv.github.io/notes/how-postgres-compile-sql/</guid>
       <description>How PostgreSQL compile SQL? A few days ago, @eatonphil organized a Postgres Internals wehack group on Discord for people interested in understanding and contributing to the PostgreSQL source code. I had previously tried to understand more about how SQL expressions are compiled using LLVM but without much success, with this encouragement I decided to go deeper and understand how PostgreSQL compiles SQL code, and here I will describe my understanding notes.</description>
     </item>
     
     <item>
       <title></title>
-      <link>http://localhost:1313/papers/</link>
+      <link>https://mattheusv.github.io/papers/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/papers/</guid>
+      <guid>https://mattheusv.github.io/papers/</guid>
       <description>1. Exploiting Cloud Object Storage for High-Performance Analytics - 2023 </description>
     </item>
     
     <item>
       <title></title>
-      <link>http://localhost:1313/papers/umbra-anyblob/</link>
+      <link>https://mattheusv.github.io/papers/umbra-anyblob/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/papers/umbra-anyblob/</guid>
+      <guid>https://mattheusv.github.io/papers/umbra-anyblob/</guid>
       <description>Exploiting Cloud Object Storage for High-Performance Analytics (2023) The paper presents the AnyBlob; A cloud based object store download manager based on io-uring for query engines that optimizes throughput while minimizing CPU usage.
 Due the recently improvements on network bandwidth on cloud providers it is more viable to use remote storages for high-performance query analytics. In 2018 AWS introduce instances with 100 Gbit/s networking, which improves severely the latency and close the gap between local file systems and remote storages.</description>
     </item>

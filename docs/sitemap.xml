@@ -2,22 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/about/</loc>
+    <loc>https://mattheusv.github.io/about/</loc>
   </url><url>
-    <loc>http://localhost:1313/cv/</loc>
+    <loc>https://mattheusv.github.io/cv/</loc>
   </url><url>
-    <loc>http://localhost:1313/notes/</loc>
+    <loc>https://mattheusv.github.io/notes/</loc>
   </url><url>
-    <loc>http://localhost:1313/notes/how-postgres-compile-sql/</loc>
+    <loc>https://mattheusv.github.io/notes/how-postgres-compile-sql/</loc>
   </url><url>
-    <loc>http://localhost:1313/papers/</loc>
+    <loc>https://mattheusv.github.io/papers/</loc>
   </url><url>
-    <loc>http://localhost:1313/papers/umbra-anyblob/</loc>
+    <loc>https://mattheusv.github.io/papers/umbra-anyblob/</loc>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://mattheusv.github.io/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://mattheusv.github.io/</loc>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://mattheusv.github.io/tags/</loc>
   </url>
 </urlset>
