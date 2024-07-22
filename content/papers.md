@@ -1,2 +1,2 @@
-#### 1. [Exploiting Cloud Object Storage for High-Performance Analytics](/papers/umbra-anyblob) - 2023
-
+####  Jul 22, 2024
+### [Exploiting Cloud Object Storage for High-Performance Analytics](/papers/umbra-anyblob)
