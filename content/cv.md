@@ -1,10 +1,15 @@
 ## Experience
 
 - Jan 2024/Present - **Data Engineer**, [Gympass](https://site.gympass.com)
-  - Development of tools to integrate different analytic systems such as Trino and Hive.
+  - Development of data tools to integrate different analytic systems such as Trino, Hive and Apache Ranger.
+  - Main responsible of Ether development; A database migration tool to manage tables and permissions on a data warehouse architecture.
+  - Maintainer of a internal fork of Apache Ranger to make it possible to integrate properly with newer versions of Trino and Java.
 
 - Jun 2022/Jan 2024 - **Software Enginner**, [Gympass](https://site.gympass.com)
   - Distributed system backend development on Tagus team, the heart of the Gympass business model.
+    - Most of development using Go and Aurora Postgres.
+    - Monitoring and debug production issues using DataDog
+    - Help to manage best practices to write efficient SQL in production environments.
   - Work different systems to make it possible to Gympass fully migrate from a monolith to a microservice architecture.
 
 - May 2021/Jun 2022 - **Backend Software Enginner**, [Zup Innovation](https://www.zup.com.br/)
